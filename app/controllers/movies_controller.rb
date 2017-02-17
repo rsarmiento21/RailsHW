@@ -35,7 +35,7 @@ class MoviesController < ApplicationController
       redirect = true
     end
     
-    @movies = @movies.where("rating in (?)", @ratings.keys)
+    @movies = Movie.where("rating in (?)", @ratings.keys)
     
     if(@sortby == "title")
       @movies = @movies.order(:title)
@@ -47,7 +47,7 @@ class MoviesController < ApplicationController
     
     if redirect
       flash.keep
-      redirect_to movies_path({:category => @category, :sort => @sort, :ratings => @ratings})
+      redirect_to movies_path({:category => @category, :sortby => @sortby, :ratings => @ratings})
     end
   end
 
