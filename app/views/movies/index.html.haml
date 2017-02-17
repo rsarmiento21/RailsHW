@@ -4,14 +4,17 @@
 %table#movies
   %thead
     %tr
-      %th Movie Title
-      %th Rating
-      %th Release Date
-      %th More Info
+      %th{:class => "#{@sortby == "title" ? "hilite" : ""}"} 
+        %a#title_header{:href => movies_path({"sortby" => "title"})} Movie Title
+      %th{:class => "#{@sortby == "rating" ? "hilite" : ""}"} 
+        %a#rating_header{:href => movies_path({"sortby" => "rating"})} Rating
+      %th{:class => "#{@sortby == "release" ? "hilite" : ""}"} 
+        %a#release_date_header{:href => movies_path({"sortby" => "release"})} Release Date
+      %th= link_to 'More Info', movies_path
   %tbody
     - @movies.each do |movie|
       %tr
-        %td= movie.title 
+        %td= movie.title
         %td= movie.rating
         %td= movie.release_date
         %td= link_to "More about #{movie.title}", movie_path(movie)

@@ -1,7 +1,7 @@
 class MoviesController < ApplicationController
 
   def movie_params
-    params.require(:movie).permit(:title, :rating, :description, :release_date)
+    params.require(:movie).permit(:title, :rating, :description, :release_date, :sortby)
   end
 
   def show
@@ -11,7 +11,20 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    @movies = Movie.order(:id)
+    
+    @sortby = nil
+    if params.has_key?(:sortby)
+      @sortby = params[:sortby]
+    end
+    
+    if(@sortby == "title")
+      @movies = Movie.order(:title)
+    elsif @sortby == "rating"
+      @movies = Movie.order(:rating)
+    elsif @sortby == "release"
+      @movies = Movie.order(:release_date)
+    end
   end
 
   def new
@@ -31,6 +44,7 @@ class MoviesController < ApplicationController
   def update
     @movie = Movie.find params[:id]
     @movie.update_attributes!(movie_params)
+    
     flash[:notice] = "#{@movie.title} was successfully updated."
     redirect_to movie_path(@movie)
   end
