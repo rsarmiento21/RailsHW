@@ -14,9 +14,14 @@ class MoviesController < ApplicationController
     @movies = Movie.order(:id)
     @all_ratings = Movie.ratings
     @sortby = nil
+    redirect = false
     
     if params.has_key?(:sortby)
       @sortby = params[:sortby]
+      session[:sortby] = @sortby
+    elsif params.has_key?(:sortby)
+      @sortby = session[:sortby]
+      redirect = true
     end
     
     
@@ -24,7 +29,10 @@ class MoviesController < ApplicationController
     @ratings = {"G" => "1", "PG" => "1", "PG-13" => "1", "R" => "1"}
     if params.has_key?(:ratings)
       @ratings = params[:ratings]
-      puts "success"
+      session[:ratings] = @ratings
+    elsif session.has_key?(:ratings)
+      @ratings = session[:ratings]
+      redirect = true
     end
     
     @movies = @movies.where("rating in (?)", @ratings.keys)
@@ -35,6 +43,11 @@ class MoviesController < ApplicationController
       @movies = @movies.order(:rating)
     elsif @sortby == "release"
       @movies = @movies.order(:release_date)
+    end
+    
+    if redirect
+      flash.keep
+      redirect_to movies_path({:category => @category, :sort => @sort, :ratings => @ratings})
     end
   end
 
